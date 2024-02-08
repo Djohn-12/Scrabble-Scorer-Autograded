@@ -33,18 +33,72 @@ function oldScrabbleScorer(word) {
 // don't change the names or your program won't work as expected. //
 
 function initialPrompt() {
-   console.log("Let's play some scrabble! Enter a word:");
+   let word = input.question("Let's play some scrabble! Enter a word: ");
+   let score = oldScrabbleScorer(word);
+   console.log(`Score for: ${word}\n${score}`);
+   return score;
 };
 
-let simpleScorer;
+function simpleScorer(word){
+   word = word.toUpperCase();
+   let score = 0;
+   for (let i = 0; i < word.length; i++){
+      score += 1;
+   }
+   return score;
+}
 
-let vowelBonusScorer;
+function vowelBonusScorer(word){
+   word = word.toUpperCase();
+   let score = 0;
+   
+   const vowels = ["A","E","I","O","U"];
+   const vowelPoints = 3;
+   const consonantPoints = 1;
+
+   for (let i = 0; i < word.length; i++){
+      if (vowels.includes(word[i])){
+         score += vowelPoints;
+      } else {
+         score += consonantPoints;
+      }
+   } 
+   return score;
+};
 
 let scrabbleScorer;
 
-const scoringAlgorithms = [];
+const scoringAlgorithms = [
+   {
+      name: "Simple Score",
+      info: "Each letter is worth 1 point.",
+      scoringFunction: simpleScorer
+   },
+   {
+      name: "Bonus Vowels",
+      info:"Vowels are 3 pts, consonants are 1 pt.",
+      scoringFunction: vowelBonusScorer
+   },
+   {
+      name: "Scrabble",
+      info: "The traditional scoring algorithm.",
+      scoringFunction: oldScrabbleScorer
+   }
+];
 
-function scorerPrompt() {}
+function scorerPrompt(word) {
+   console.log(`Enter 0 for simple scorer.\nEnter 1 for Vowel bonus scoring.\nEnter 2 for Scrabble scoring. `)   
+   let inputQuestion = input.question(`Which scoring algorithm would you like to use? `);
+   inputQuestion = Number(inputQuestion);
+   if (inputQuestion >=0 && inputQuestion < scoringAlgorithms.length){
+      let score = scoringAlgorithms[inputQuestion].scoringFunction(word);
+      console.log(`Score for '${word}' using ${scoringAlgorithms[inputQuestion].name}: ${score}`);
+      return score;
+   } else{
+      console.log("Try again")
+      return inputQuestion;
+   }
+} 
 
 function transform() {};
 
@@ -52,6 +106,7 @@ let newPointStructure;
 
 function runProgram() {
    initialPrompt();
+   scorerPrompt();
    
 }
 
